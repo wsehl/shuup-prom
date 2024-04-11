@@ -17,6 +17,12 @@ from shuup.utils.django_compat import MiddlewareMixin, force_text
 from shuup.utils.excs import ExceptionalResponse, Problem
 
 
+import time
+from prometheus_client import Histogram
+
+ttfb_histogram = Histogram("django_ttfb_seconds", "Time to First Byte (TTFB)")
+
+
 class ExceptionMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
         if isinstance(exception, ExceptionalResponse):
@@ -78,3 +84,15 @@ class ShuupMiddleware(MiddlewareMixin):
 
         if not request.shop:
             raise ImproperlyConfigured(_("No such shop is configured."))
+
+
+class TTFBMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        start_time = time.time()
+        response = self.get_response(request)
+        ttfb = time.time() - start_time
+        ttfb_histogram.observe(ttfb)
+        return response

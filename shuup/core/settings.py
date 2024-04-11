@@ -287,3 +287,11 @@ SHUUP_MASS_UNIT = "g"
 #: All volume values will use this unit raised to the power of 3.
 #:
 SHUUP_LENGTH_UNIT = "mm"
+
+MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
+    "shuup.core.middleware.TTFBMiddleware",
+]
+INSTALLED_APPS = [
+    "django_prometheus",
+]

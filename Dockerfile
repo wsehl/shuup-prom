@@ -12,6 +12,15 @@ RUN apt-get update \
         python3-pip \
     && rm -rf /var/lib/apt/lists/ /var/cache/apt/
 
+RUN apt-get update && apt-get install -y \
+    libxml2-dev \
+    libxslt-dev \
+    python3-lxml \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install --upgrade pip setuptools wheel
+
 # These invalidate the cache every single time but
 # there really isn't any other obvious way to do this.
 COPY . /app
@@ -20,6 +29,9 @@ WORKDIR /app
 # The dev compose file sets this to 1 to support development and editing the source code.
 # The default value of 0 just installs the demo for running.
 ARG editable=0
+
+RUN pip3 install markupsafe==1.1.1
+RUN pip3 install django-prometheus==1.0.11
 
 RUN if [ "$editable" -eq 1 ]; then pip3 install -r requirements-tests.txt && python3 setup.py build_resources; else pip3 install shuup; fi
 

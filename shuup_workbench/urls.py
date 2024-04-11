@@ -6,9 +6,13 @@
 # LICENSE file in the root directory of this source tree.
 from django.conf import settings
 from django.conf.urls import include, url
+from django.urls import path
 from django.conf.urls.static import static
+
+from django_prometheus import exports as prometheus_metrics
 
 urlpatterns = [
     url(r"^sa/", include("shuup.admin.urls", namespace="shuup_admin")),
     url(r"^", include("shuup.front.urls", namespace="shuup")),
+    url(r"^", prometheus_metrics.ExportToDjangoView),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

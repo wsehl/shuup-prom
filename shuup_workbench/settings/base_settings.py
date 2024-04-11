@@ -30,6 +30,7 @@ INSTALLED_APPS = add_enabled_addons(
         "django.contrib.messages",
         "django.contrib.sessions",
         "django.contrib.staticfiles",
+        "django_prometheus",
         # external apps that needs to be loaded before Shuup
         "easy_thumbnails",
         # shuup themes
@@ -78,6 +79,7 @@ INSTALLED_APPS = add_enabled_addons(
 )
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -90,6 +92,7 @@ MIDDLEWARE = [
     "shuup.front.middleware.ShuupFrontMiddleware",
     "shuup.xtheme.middleware.XthemeMiddleware",
     "shuup.admin.middleware.ShuupAdminMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "shuup_workbench.urls"
